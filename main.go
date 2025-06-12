@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cmd-txt-file-scanner/domain"
 	"cmd-txt-file-scanner/scanner"
 	"fmt"
 	"log"
@@ -14,8 +15,15 @@ func main() {
 	rootDir := os.Args[1]
 
 	filePaths, err := scanner.ScanDirectory(rootDir)
+	textFiles := domain.TextFiles{
+		Paths: filePaths,
+		Count: int64(len(filePaths)),
+	}
 	if err != nil {
 		log.Fatalf("err-scanning-directory: %v", err)
 	}
-	fmt.Println(filePaths)
+	for _, path := range textFiles.Paths {
+		fmt.Println(path)
+	}
+	fmt.Println(textFiles.Count)
 }
