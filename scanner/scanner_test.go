@@ -70,7 +70,8 @@ func TestScanDirectory_ReturnsExpectedTxtFiles(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			root := tc.setupFunc(t)
-			files, err := ScanDirectory(root)
+			fSc := NewFileScanner()
+			files, err := fSc.Scan(root)
 
 			if err != nil {
 				t.Fatalf("Unexpected error: %v", err)
