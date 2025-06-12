@@ -1,7 +1,7 @@
 package scanner
 
 import (
-	"os"
+	"io/fs"
 	"path/filepath"
 	"strings"
 )
@@ -9,11 +9,11 @@ import (
 func ScanDirectory(root string) ([]string, error) {
 	var filePaths []string
 
-	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return nil
 		}
-		if !info.IsDir() && strings.HasSuffix(strings.ToLower(info.Name()), ".txt") {
+		if !d.IsDir() && strings.HasSuffix(strings.ToLower(d.Name()), ".txt") {
 			filePaths = append(filePaths, path)
 		}
 		return nil
