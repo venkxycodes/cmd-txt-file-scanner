@@ -10,8 +10,8 @@ func NewAggregator(w word_counter.WordCounter) *Aggregator {
 	return &Aggregator{WordCounter: w}
 }
 
-func (a *Aggregator) AggregateWordCounts(paths []string) (map[string]int, error) {
-	totalCounts := make(map[string]int)
+func (a *Aggregator) AggregateWordCounts(paths []string) (map[string]int64, error) {
+	totalCounts := make(map[string]int64)
 
 	for _, path := range paths {
 		wordCounts, err := a.WordCounter.CountWords(path)
@@ -19,7 +19,7 @@ func (a *Aggregator) AggregateWordCounts(paths []string) (map[string]int, error)
 			return nil, err
 		}
 		for word, count := range wordCounts {
-			totalCounts[word] += count
+			totalCounts[word] += int64(count)
 		}
 	}
 	return totalCounts, nil

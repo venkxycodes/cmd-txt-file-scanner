@@ -18,12 +18,12 @@ func execute(rootDir string) {
 		Paths:         paths,
 		NumberOfFiles: int64(len(paths)),
 	}
-	wordCounts, err := appcontext.GetAggregator().AggregateWordCounts(paths)
-	if err != nil {
+	wordCountMap, aggErr := appcontext.GetAggregator().AggregateWordCounts(paths)
+	if aggErr != nil {
 		log.Fatalf("Failed to aggregate word counts: %v", err)
 	}
-
-	for word, count := range wordCounts {
+	directoryDetails.WordCountPerFile = wordCountMap
+	for word, count := range wordCountMap {
 		fmt.Printf("%s: %d\n", word, count)
 	}
 	fmt.Printf("Processed %d files\n", len(paths))

@@ -1,31 +1,10 @@
 package scanner
 
 import (
-	"os"
-	"path/filepath"
+	"cmd-txt-file-scanner/utils"
 	"strings"
 	"testing"
 )
-
-func createTestStructure(t *testing.T, baseDir string, structure map[string]interface{}) {
-	t.Helper()
-	for name, value := range structure {
-		fullPath := filepath.Join(baseDir, name)
-		switch v := value.(type) {
-		case string:
-			if err := os.WriteFile(fullPath, []byte(v), 0644); err != nil {
-				t.Fatalf("Failed to create file %s: %v", fullPath, err)
-			}
-		case map[string]interface{}:
-			if err := os.Mkdir(fullPath, 0755); err != nil {
-				t.Fatalf("Failed to create dir %s: %v", fullPath, err)
-			}
-			createTestStructure(t, fullPath, v)
-		default:
-			t.Fatalf("Unsupported type for test structure: %T", v)
-		}
-	}
-}
 
 func TestScanDirectory_ReturnsExpectedTxtFiles(t *testing.T) {
 	tests := []struct {
@@ -38,7 +17,7 @@ func TestScanDirectory_ReturnsExpectedTxtFiles(t *testing.T) {
 			name: "finds_txt_files_in_root_and_nested",
 			setupFunc: func(t *testing.T) string {
 				tempDir := t.TempDir()
-				createTestStructure(t, tempDir, map[string]interface{}{
+				utils.CreateTestStructure(t, tempDir, map[string]interface{}{
 					"a.txt":     "1",
 					"b.TXT":     "2",
 					"ignore.md": "skip",
@@ -55,7 +34,7 @@ func TestScanDirectory_ReturnsExpectedTxtFiles(t *testing.T) {
 			name: "returns_empty_slice_if_no_txt",
 			setupFunc: func(t *testing.T) string {
 				tempDir := t.TempDir()
-				createTestStructure(t, tempDir, map[string]interface{}{
+				utils.CreateTestStructure(t, tempDir, map[string]interface{}{
 					"notebook.pdf": "nope",
 					"folder": map[string]interface{}{
 						"img.png": "skip",
