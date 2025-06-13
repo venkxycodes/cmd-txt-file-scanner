@@ -9,24 +9,7 @@ import (
 	"os"
 )
 
-func execute(rootDir string) {
-	paths, err := appcontext.GetFileScanner().Scan(rootDir)
-	if err != nil {
-		log.Fatalf("err-failed-to-scan-directory: %v", err)
-		return
-	}
-
-	line_counter.CountAllLines(paths)
-
-	directoryDetails := domain.TextFiles{
-		Paths:         paths,
-		NumberOfFiles: int64(len(paths)),
-	}
-	wordCountMap, aggErr := appcontext.GetWordCounter().AggregateWordCounts(directoryDetails.Paths)
-	if aggErr != nil {
-		log.Fatalf("err-failed-to-aggregate-word-counts: %v", err)
-	}
-	directoryDetails.WordCountPerFile = wordCountMap
+func listTopWords(wordCountMap map[string]int64) {
 	h := &domain.MinHeap{}
 	heap.Init(h)
 	for word, count := range wordCountMap {
@@ -55,6 +38,31 @@ func execute(rootDir string) {
 	for _, wc := range top10 {
 		log.Printf("%s: %d\n", wc.Word, wc.Count)
 	}
+	return
+}
+
+func execute(rootDir string) {
+	paths, err := appcontext.GetFileScanner().Scan(rootDir)
+	if err != nil {
+		log.Fatalf("err-failed-to-scan-directory: %v", err)
+		return
+	}
+
+	pathLineCountMap := line_counter.CountAllLines(paths)
+	for path, count := range pathLineCountMap {
+		log.Printf("path: %s, count: %d\n", path, count)
+	}
+
+	directoryDetails := domain.TextFiles{
+		Paths:         paths,
+		NumberOfFiles: int64(len(paths)),
+	}
+	wordCountMap, aggErr := appcontext.GetWordCounter().CountWordsInAllFiles(directoryDetails.Paths)
+	if aggErr != nil {
+		log.Fatalf("err-failed-to-aggregate-word-counts: %v", err)
+	}
+	directoryDetails.WordCountPerFile = wordCountMap
+	listTopWords(wordCountMap)
 	log.Printf("Processed %d files\n", len(paths))
 }
 
