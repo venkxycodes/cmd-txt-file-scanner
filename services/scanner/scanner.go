@@ -16,7 +16,7 @@ func (s *FileScanner) Scan(root string) ([]string, error) {
 	var filePaths []string
 	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			return nil
+			return err
 		}
 		if !d.IsDir() && strings.HasSuffix(strings.ToLower(d.Name()), ".txt") {
 			filePaths = append(filePaths, path)
