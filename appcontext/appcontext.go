@@ -2,7 +2,7 @@ package appcontext
 
 import (
 	"cmd-txt-file-scanner/services/scanner"
-	"cmd-txt-file-scanner/services/word-counter"
+	"cmd-txt-file-scanner/services/word_counter"
 )
 
 var appCtx *appContext
