@@ -1,4 +1,4 @@
-package counter
+package word_counter
 
 import (
 	"cmd-txt-file-scanner/utils"

@@ -3,6 +3,7 @@ package main
 import (
 	"cmd-txt-file-scanner/appcontext"
 	"cmd-txt-file-scanner/domain"
+	"cmd-txt-file-scanner/services/line_counter"
 	"container/heap"
 	"log"
 	"os"
@@ -14,6 +15,9 @@ func execute(rootDir string) {
 		log.Fatalf("err-failed-to-scan-directory: %v", err)
 		return
 	}
+
+	line_counter.CountAllLines(paths)
+
 	directoryDetails := domain.TextFiles{
 		Paths:         paths,
 		NumberOfFiles: int64(len(paths)),

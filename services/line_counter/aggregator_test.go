@@ -1,4 +1,4 @@
-package word_counter
+package line_counter
 
 import (
 	"cmd-txt-file-scanner/utils"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestAggregateWordCounts(t *testing.T) {
+func TestCountAllLines(t *testing.T) {
 	tests := []struct {
 		name      string
 		structure map[string]interface{}
@@ -15,30 +15,30 @@ func TestAggregateWordCounts(t *testing.T) {
 		files     []string
 	}{
 		{
-			name: "aggregates_words_across_multiple_files",
+			name: "counts_lines_in_multiple_files",
 			structure: map[string]interface{}{
-				"a.txt": "Hello world",
-				"b.txt": "Hello Go",
-				"c.txt": "Go Go Go",
+				"a.txt": "Hello world\nAnother line",
+				"b.txt": "Line one\nLine two\nLine three",
+				"c.txt": "Single line",
 			},
 			expected: map[string]int64{
-				"hello": 2,
-				"world": 1,
-				"go":    4,
+				"a.txt": 2,
+				"b.txt": 3,
+				"c.txt": 1,
 			},
 			files: []string{"a.txt", "b.txt", "c.txt"},
 		},
 		{
-			name: "includes_empty_file_in_aggregation",
+			name: "includes_empty_file",
 			structure: map[string]interface{}{
-				"one.txt":   "Hello there",
+				"one.txt":   "Just one line",
 				"empty.txt": "",
-				"two.txt":   "there again",
+				"two.txt":   "Line one\nLine two",
 			},
 			expected: map[string]int64{
-				"hello": 1,
-				"there": 2,
-				"again": 1,
+				"one.txt":   1,
+				"empty.txt": 0,
+				"two.txt":   2,
 			},
 			files: []string{"one.txt", "empty.txt", "two.txt"},
 		},
@@ -60,14 +60,10 @@ func TestAggregateWordCounts(t *testing.T) {
 				fullPaths = append(fullPaths, filepath.Join(tempDir, f))
 			}
 
-			wc := &WordCounter{}
-			got, err := wc.AggregateWordCounts(fullPaths)
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
+			got := CountAllLines(fullPaths)
 
 			if !reflect.DeepEqual(got, tc.expected) {
-				t.Errorf("AggregateWordCounts() = %v; want %v", got, tc.expected)
+				t.Errorf("CountAllLines() = %v; want %v", got, tc.expected)
 			}
 		})
 	}
