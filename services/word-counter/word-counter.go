@@ -13,14 +13,14 @@ func NewWordCounter() *WordCounter {
 	return &WordCounter{}
 }
 
-func (w *WordCounter) CountWords(path string) (map[string]int, error) {
+func (w *WordCounter) CountWords(path string) (map[string]int64, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	counts := make(map[string]int)
+	counts := make(map[string]int64)
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {

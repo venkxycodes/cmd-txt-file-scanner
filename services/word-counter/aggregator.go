@@ -13,7 +13,7 @@ func (wc *WordCounter) AggregateWordCounts(paths []string) (map[string]int64, er
 		errOnce sync.Once
 		errCh   = make(chan error, 1)
 		jobs    = make(chan string)
-		results = make(chan map[string]int)
+		results = make(chan map[string]int64)
 	)
 
 	workerCount := runtime.NumCPU()

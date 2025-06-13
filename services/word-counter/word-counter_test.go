@@ -45,7 +45,7 @@ func TestCountWords(t *testing.T) {
 	tests := []struct {
 		name      string
 		structure map[string]interface{}
-		expected  map[string]int
+		expected  map[string]int64
 		filename  string
 	}{
 		{
@@ -53,7 +53,7 @@ func TestCountWords(t *testing.T) {
 			structure: map[string]interface{}{
 				"file.txt": "Hello world\nhello again",
 			},
-			expected: map[string]int{
+			expected: map[string]int64{
 				"hello": 2,
 				"world": 1,
 				"again": 1,
@@ -65,7 +65,7 @@ func TestCountWords(t *testing.T) {
 			structure: map[string]interface{}{
 				"sym.txt": "Go! Go? Go.\n123",
 			},
-			expected: map[string]int{
+			expected: map[string]int64{
 				"go": 3,
 			},
 			filename: "sym.txt",
@@ -75,7 +75,7 @@ func TestCountWords(t *testing.T) {
 			structure: map[string]interface{}{
 				"empty.txt": "",
 			},
-			expected: map[string]int{},
+			expected: map[string]int64{},
 			filename: "empty.txt",
 		},
 	}
