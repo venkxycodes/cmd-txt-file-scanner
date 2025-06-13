@@ -8,12 +8,10 @@ import (
 )
 
 func CountAllLines(paths []string) domain.LinesInEachPath {
-	jobs := make(chan string, len(paths))
-	results := make(chan struct {
-		path  string
-		count int64
-	}, len(paths))
-
+	var (
+		jobs    = make(chan string, len(paths))
+		results = make(chan map[string]int64)
+	)
 	workerCount := runtime.NumCPU()
 	var wg sync.WaitGroup
 	wg.Add(workerCount)
@@ -27,33 +25,27 @@ func CountAllLines(paths []string) domain.LinesInEachPath {
 					log.Printf("error counting lines in %s: %v", path, err)
 					continue
 				}
-				results <- struct {
-					path  string
-					count int64
-				}{
-					path:  path,
-					count: n,
-				}
+				temp := map[string]int64{path: n}
+				results <- temp
 			}
 		}()
 	}
 
-	go func() {
-		for _, p := range paths {
-			jobs <- p
-		}
-		close(jobs)
-	}()
+	for _, p := range paths {
+		jobs <- p
+	}
+	close(jobs)
 
 	go func() {
 		wg.Wait()
 		close(results)
 	}()
 
-	lineMap := make(domain.LinesInEachPath, len(paths))
-	for r := range results {
-		lineMap[r.path] = r.count
+	lineCountMap := make(domain.LinesInEachPath, len(paths))
+	for counts := range results {
+		for path, count := range counts {
+			lineCountMap[path] += count
+		}
 	}
-
-	return lineMap
+	return lineCountMap
 }

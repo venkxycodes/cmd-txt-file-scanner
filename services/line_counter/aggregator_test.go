@@ -15,7 +15,7 @@ func TestCountAllLines(t *testing.T) {
 		files     []string
 	}{
 		{
-			name: "counts_lines_in_multiple_files",
+			name: "count lines in multiple files",
 			structure: map[string]interface{}{
 				"a.txt": "Hello world\nAnother line",
 				"b.txt": "Line one\nLine two\nLine three",
@@ -29,7 +29,7 @@ func TestCountAllLines(t *testing.T) {
 			files: []string{"a.txt", "b.txt", "c.txt"},
 		},
 		{
-			name: "includes_empty_file",
+			name: "includes empty file",
 			structure: map[string]interface{}{
 				"one.txt":   "Just one line",
 				"empty.txt": "",
@@ -43,7 +43,7 @@ func TestCountAllLines(t *testing.T) {
 			files: []string{"one.txt", "empty.txt", "two.txt"},
 		},
 		{
-			name:      "returns_empty_map_on_no_files",
+			name:      "no files",
 			structure: map[string]interface{}{},
 			expected:  map[string]int64{},
 			files:     []string{},
@@ -60,7 +60,13 @@ func TestCountAllLines(t *testing.T) {
 				fullPaths = append(fullPaths, filepath.Join(tempDir, f))
 			}
 
-			got := CountAllLines(fullPaths)
+			rawResult := CountAllLines(fullPaths)
+
+			// Normalize keys to base filenames for comparison
+			got := make(map[string]int64)
+			for fullPath, count := range rawResult {
+				got[filepath.Base(fullPath)] = count
+			}
 
 			if !reflect.DeepEqual(got, tc.expected) {
 				t.Errorf("CountAllLines() = %v; want %v", got, tc.expected)
