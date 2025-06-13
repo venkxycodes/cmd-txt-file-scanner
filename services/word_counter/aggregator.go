@@ -31,16 +31,14 @@ func (wc *WordCounter) CountWordsInAllFiles(paths []string) (map[string]int64, e
 		}()
 	}
 
+	for _, p := range paths {
+		jobs <- p
+	}
+	close(jobs)
+
 	go func() {
 		wg.Wait()
 		close(results)
-	}()
-
-	go func() {
-		for _, p := range paths {
-			jobs <- p
-		}
-		close(jobs)
 	}()
 
 	for counts := range results {
