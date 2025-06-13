@@ -15,7 +15,7 @@ func TestAggregateWordCounts(t *testing.T) {
 		files     []string
 	}{
 		{
-			name: "aggregates_words_across_multiple_files",
+			name: "test aggregates words across multiple files",
 			structure: map[string]interface{}{
 				"a.txt": "Hello world",
 				"b.txt": "Hello Go",
@@ -29,7 +29,7 @@ func TestAggregateWordCounts(t *testing.T) {
 			files: []string{"a.txt", "b.txt", "c.txt"},
 		},
 		{
-			name: "includes_empty_file_in_aggregation",
+			name: "test includes empty file in aggregation",
 			structure: map[string]interface{}{
 				"one.txt":   "Hello there",
 				"empty.txt": "",
@@ -43,7 +43,7 @@ func TestAggregateWordCounts(t *testing.T) {
 			files: []string{"one.txt", "empty.txt", "two.txt"},
 		},
 		{
-			name:      "returns_empty_map_on_no_files",
+			name:      "test returns empty map on no files",
 			structure: map[string]interface{}{},
 			expected:  map[string]int64{},
 			files:     []string{},

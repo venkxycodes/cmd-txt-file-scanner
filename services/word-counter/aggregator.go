@@ -1,6 +1,7 @@
 package word_counter
 
 import (
+	"log"
 	"runtime"
 	"sync"
 )
@@ -10,8 +11,6 @@ func (wc *WordCounter) AggregateWordCounts(paths []string) (map[string]int64, er
 	var (
 		mu      sync.Mutex
 		wg      sync.WaitGroup
-		errOnce sync.Once
-		errCh   = make(chan error, 1)
 		jobs    = make(chan string)
 		results = make(chan map[string]int64)
 	)
@@ -24,8 +23,8 @@ func (wc *WordCounter) AggregateWordCounts(paths []string) (map[string]int64, er
 			for path := range jobs {
 				counts, err := wc.CountWords(path)
 				if err != nil {
-					errOnce.Do(func() { errCh <- err })
-					return
+					log.Printf("err-counting-words, path: %s", path)
+					continue
 				}
 				results <- counts
 			}
@@ -51,11 +50,5 @@ func (wc *WordCounter) AggregateWordCounts(paths []string) (map[string]int64, er
 		}
 		mu.Unlock()
 	}
-
-	select {
-	case err := <-errCh:
-		return nil, err
-	default:
-		return totalCounts, nil
-	}
+	return totalCounts, nil
 }
