@@ -61,13 +61,13 @@ func TestAggregateWordCounts(t *testing.T) {
 			}
 
 			wc := &WordCounter{}
-			got, err := wc.AggregateWordCounts(fullPaths)
+			got, err := wc.CountWordsInAllFiles(fullPaths)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
 
 			if !reflect.DeepEqual(got, tc.expected) {
-				t.Errorf("AggregateWordCounts() = %v; want %v", got, tc.expected)
+				t.Errorf("CountWordsInAllFiles() = %v; want %v", got, tc.expected)
 			}
 		})
 	}

@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-func (wc *WordCounter) AggregateWordCounts(paths []string) (map[string]int64, error) {
+func (wc *WordCounter) CountWordsInAllFiles(paths []string) (map[string]int64, error) {
 	totalCounts := make(map[string]int64)
 	var (
 		mu      sync.Mutex
