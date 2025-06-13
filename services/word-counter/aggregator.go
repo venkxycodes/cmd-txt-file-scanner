@@ -47,7 +47,7 @@ func (wc *WordCounter) AggregateWordCounts(paths []string) (map[string]int64, er
 	for counts := range results {
 		mu.Lock()
 		for word, cnt := range counts {
-			totalCounts[word] += int64(cnt)
+			totalCounts[word] += cnt
 		}
 		mu.Unlock()
 	}

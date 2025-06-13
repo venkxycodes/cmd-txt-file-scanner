@@ -4,7 +4,6 @@ import (
 	"cmd-txt-file-scanner/appcontext"
 	"cmd-txt-file-scanner/domain"
 	"container/heap"
-	"fmt"
 	"log"
 	"os"
 )
@@ -12,7 +11,7 @@ import (
 func execute(rootDir string) {
 	paths, err := appcontext.GetFileScanner().Scan(rootDir)
 	if err != nil {
-		log.Fatalf("Failed to scan directory: %v", err)
+		log.Fatalf("err-failed-to-scan-directory: %v", err)
 		return
 	}
 	directoryDetails := domain.TextFiles{
@@ -21,21 +20,23 @@ func execute(rootDir string) {
 	}
 	wordCountMap, aggErr := appcontext.GetWordCounter().AggregateWordCounts(directoryDetails.Paths)
 	if aggErr != nil {
-		log.Fatalf("Failed to aggregate word counts: %v", err)
+		log.Fatalf("err-failed-to-aggregate-word-counts: %v", err)
 	}
 	directoryDetails.WordCountPerFile = wordCountMap
-	for word, count := range wordCountMap {
-		fmt.Printf("%s: %d\n", word, count)
-	}
 	h := &domain.MinHeap{}
 	heap.Init(h)
-
 	for word, count := range wordCountMap {
 		if h.Len() < 10 {
-			heap.Push(h, domain.WordCount{word, count})
+			heap.Push(h, domain.WordCount{
+				Word:  word,
+				Count: count,
+			})
 		} else if count > (*h)[0].Count {
 			heap.Pop(h)
-			heap.Push(h, domain.WordCount{word, count})
+			heap.Push(h, domain.WordCount{
+				Word:  word,
+				Count: count,
+			})
 		}
 	}
 
@@ -43,16 +44,14 @@ func execute(rootDir string) {
 	for h.Len() > 0 {
 		top10 = append(top10, heap.Pop(h).(domain.WordCount))
 	}
-
 	for i, j := 0, len(top10)-1; i < j; i, j = i+1, j-1 {
 		top10[i], top10[j] = top10[j], top10[i]
 	}
-
-	fmt.Println("Top 10 words by count:")
+	log.Printf("info-top-10-words-by-count:")
 	for _, wc := range top10 {
-		fmt.Printf("%s: %d\n", wc.Word, wc.Count)
+		log.Printf("%s: %d\n", wc.Word, wc.Count)
 	}
-	fmt.Printf("Processed %d files\n", len(paths))
+	log.Printf("Processed %d files\n", len(paths))
 }
 
 func main() {
