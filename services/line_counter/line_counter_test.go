@@ -44,14 +44,15 @@ func TestCountLines(t *testing.T) {
 			want:      3,
 		},
 	}
-
+	lc := NewLineCounter()
 	tempDir := t.TempDir()
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			utils.CreateTestStructure(t, tempDir, tc.structure)
 			fullPath := filepath.Join(tempDir, tc.filename)
-			got, err := CountLines(fullPath)
+
+			got, err := lc.CountLines(fullPath)
 			if err != nil {
 				t.Fatalf("CountLines(%s) returned error: %v", tc.filename, err)
 			}
@@ -62,7 +63,7 @@ func TestCountLines(t *testing.T) {
 	}
 
 	t.Run("nonexistent file", func(t *testing.T) {
-		if _, err := CountLines(filepath.Join(tempDir, "no", "file.txt")); err == nil {
+		if _, err := lc.CountLines(filepath.Join(tempDir, "no", "file.txt")); err == nil {
 			t.Error("expected error for nonexistent file, got nil")
 		}
 	})

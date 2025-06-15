@@ -3,7 +3,6 @@ package main
 import (
 	"cmd-txt-file-scanner/appcontext"
 	"cmd-txt-file-scanner/domain"
-	"cmd-txt-file-scanner/services/line_counter"
 	"container/heap"
 	"log"
 	"os"
@@ -48,7 +47,7 @@ func execute(rootDir string) {
 		return
 	}
 
-	pathLineCountMap := line_counter.CountAllLines(paths)
+	pathLineCountMap := appcontext.GetLineCounter().CountAllLines(paths)
 	for path, count := range pathLineCountMap {
 		log.Printf("path: %s, count: %d\n", path, count)
 	}

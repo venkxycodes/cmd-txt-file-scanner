@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-func CountAllLines(paths []string) domain.LinesInEachPath {
+func (lc *LineCounter) CountAllLines(paths []string) domain.LinesInEachPath {
 	var (
 		jobs    = make(chan string, len(paths))
 		results = make(chan map[string]int64)
@@ -20,7 +20,7 @@ func CountAllLines(paths []string) domain.LinesInEachPath {
 		go func() {
 			defer wg.Done()
 			for path := range jobs {
-				n, err := CountLines(path)
+				n, err := lc.CountLines(path)
 				if err != nil {
 					log.Printf("error counting lines in %s: %v", path, err)
 					continue

@@ -59,8 +59,9 @@ func TestCountAllLines(t *testing.T) {
 			for _, f := range tc.files {
 				fullPaths = append(fullPaths, filepath.Join(tempDir, f))
 			}
+			lc := NewLineCounter()
 
-			rawResult := CountAllLines(fullPaths)
+			rawResult := lc.CountAllLines(fullPaths)
 
 			// Normalize keys to base filenames for comparison
 			got := make(map[string]int64)

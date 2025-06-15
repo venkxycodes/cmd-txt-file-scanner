@@ -5,7 +5,13 @@ import (
 	"os"
 )
 
-func CountLines(path string) (int64, error) {
+type LineCounter struct{}
+
+func NewLineCounter() *LineCounter {
+	return &LineCounter{}
+}
+
+func (lc *LineCounter) CountLines(path string) (int64, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return 0, err
