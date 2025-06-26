@@ -11,7 +11,7 @@ func (wc *WordCounter) CountWordsInAllFiles(paths []string) (map[string]int64, e
 	var (
 		mu      sync.Mutex
 		wg      sync.WaitGroup
-		jobs    = make(chan string)
+		jobs    = make(chan string, len(paths))
 		results = make(chan map[string]int64)
 	)
 
